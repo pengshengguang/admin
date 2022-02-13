@@ -1,44 +1,95 @@
 <template>
   <div class="login-container">
-    <el-form class="login-form">
+    <el-form class="login-form" :model="loginForm" :rules="loginRules" ref="loginFromRef">
       <div class="title-container">
         <h3 class="title">用户登录</h3>
       </div>
       <!-- username -->
       <el-form-item prop="username">
         <span class="svg-container">
-          <el-icon>
-            <avatar />
-          </el-icon>
+          <svg-icon icon="user"/>
         </span>
-        <el-input placeholder="username" name="username" type="text" />
+        <el-input placeholder="username" name="username" type="text" v-model="loginForm.username"/>
       </el-form-item>
       <!-- password -->
       <el-form-item prop="password">
         <span class="svg-container">
-          <el-icon>
-            <avatar />
-          </el-icon>
+          <svg-icon icon="password"/>
         </span>
-        <el-input placeholder="password" name="password" />
-        <span class="show-pwd">
-          <el-icon>
-            <avatar />
-          </el-icon>
+        <el-input placeholder="password" name="password" :type="passwordType" v-model="loginForm.password"/>
+        <span class="show-pwd" @click="onChangePwdType">
+          <svg-icon
+            :icon="passwordType === 'password' ? 'eye' : 'eye-open'"/>
         </span>
       </el-form-item>
 
-      <el-button type="primary" style="width: 100%; margin-bottom: 30px"
-        >登录</el-button
-      >
+      <el-button
+        type="primary"
+        style="width: 100%; margin-bottom: 30px"
+        :loading="loading"
+        @click="handleLogin"
+        >登录</el-button>
     </el-form>
   </div>
 </template>
 
 <script setup>
-// 导入组件之后无需注册可直接使用
-import { Avatar } from '@element-plus/icons'
-import {} from 'vue'
+import { ref } from 'vue'
+import { validatePassword } from './rules'
+import { useStore } from 'vuex'
+
+// 数据源
+const loginForm = ref({
+  username: 'super-admin',
+  password: '123456'
+})
+// 验证规则
+const loginRules = ref({
+  username: [
+    {
+      required: true,
+      trigger: 'blur',
+      message: '用户名为必填项'
+    }
+  ],
+  password: [
+    {
+      required: true,
+      trigger: 'blur',
+      validator: validatePassword() // 密码校验会比较复杂，所以要单独拿出来
+    }
+  ]
+})
+// 处理密码框文本显示状态
+const passwordType = ref('password')
+const onChangePwdType = () => {
+  if (passwordType.value === 'password') {
+    passwordType.value = 'text'
+  } else {
+    passwordType.value = 'password'
+  }
+}
+// 登录动作处理
+const loading = ref(false)
+const loginFromRef = ref(null)
+const store = useStore()
+const handleLogin = () => {
+  loginFromRef.value.validate(valid => {
+    if (!valid) return
+
+    loading.value = true
+    store
+      .dispatch('user/login', loginForm.value)
+      .then(() => {
+        loading.value = false
+        // TODO: 登录后操作
+      })
+      .catch(err => {
+        console.log(err)
+        loading.value = false
+      })
+  })
+}
 </script>
 
 <style lang="scss" scoped>
