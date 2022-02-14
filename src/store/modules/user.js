@@ -3,6 +3,7 @@ import { login } from '@/api/sys'
 import md5 from 'md5'
 import { setItem, getItem } from '@/utils/storage'
 import { TOKEN } from '@/constant'
+import router from '@/router'
 export default {
   namespaced: true, // 表示我们的模块是一个单独的模块，不会被合并到主模块
   state: () => ({
@@ -23,7 +24,9 @@ export default {
           password: md5(password)
         })
           .then(data => {
-            this.commit('user/setToken', data.data.data.token)
+            this.commit('user/setToken', data.token)
+            // 登录后操作
+            router.push('/')
             resolve()
           })
           .catch(err => {

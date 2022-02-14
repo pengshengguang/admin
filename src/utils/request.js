@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { ElMessage } from 'element-plus' // 在非组件中使用element消息提示组件！！
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
@@ -12,6 +13,25 @@ service.interceptors.request.use(
     config.headers.icode = '6095A23FBE9D2C35'
     // 必须返回 config
     return config
+  }
+)
+// 响应拦截器
+service.interceptors.response.use(
+  response => {
+    const { success, message, data } = response.data
+    //   要根据success的成功与否决定下面的操作
+    if (success) {
+      return data // 注意，axios返回的是一个promise对象，因此，这里其实是等价于 return Promise.resolve(data)
+    } else {
+      // 业务错误
+      ElMessage.error(message) // 提示错误消息
+      return Promise.reject(new Error(message))
+    }
+  },
+  error => {
+    // TODO: 将来处理 token 超时问题
+    ElMessage.error(error.message) // 提示错误信息
+    return Promise.reject(error)
   }
 )
 export default service
