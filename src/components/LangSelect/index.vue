@@ -41,7 +41,6 @@ defineProps({
 
 const store = useStore()
 const language = computed(() => {
-  debugger
   return store.getters.language
 })
 
