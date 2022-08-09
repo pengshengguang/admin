@@ -5,7 +5,7 @@
     @command="handleSetLanguage"
   >
     <div>
-      <el-tooltip content="$t('msg.navBar.lang')" :effect="effect">
+      <el-tooltip content="$t('msg.navBar.lang)" :effect="effect">
         <svg-icon icon="language" />
       </el-tooltip>
     </div>
