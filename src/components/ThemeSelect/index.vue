@@ -10,7 +10,7 @@
     <div>
       <el-tooltip :content="$t('msg.navBar.themeChange')">
         <div> <!--el-tooltip里面使用自定义组件svg-icon鼠标移入不会提示，换成 div 才会提示。 svg-icon 的特性或者 el内部内有处理 svg 的图标导致的 -->
-          <svg-icon icon="change-theme" />
+          <svg-icon id="guide-theme" icon="change-theme" />
         </div>
       </el-tooltip>
     </div>
