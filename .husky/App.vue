@@ -5,20 +5,19 @@
 </template>
 
 <script setup>
-import { ElConfigProvider } from 'element-plus'
-import zhCn from 'element-plus/es/locale/lang/zh-cn'
-import en from 'element-plus/lib/locale/lang/en'
 import { useStore } from 'vuex'
 import { generateNewStyle, writeNewStyle } from '@/utils/theme'
 import { watchSwitchLang } from '@/utils/i18n'
+import zhCn from 'element-plus/lib/locale/lang/zh-cn'
+import en from 'element-plus/lib/locale/lang/en'
 
 const store = useStore()
 generateNewStyle(store.getters.mainColor).then(newStyleText => {
   writeNewStyle(newStyleText)
 })
+
 /**
  * 监听 语言变化，重新获取个人信息
- * 个人信息在profile/components/ProjectCard.vue 组件中有用到，国际化展示的用户名字、角色
  */
 watchSwitchLang(() => {
   if (store.getters.token) {
@@ -26,9 +25,7 @@ watchSwitchLang(() => {
   }
 })
 
+document.body.removeChild(document.getElementById('m-toast'))
 </script>
 
-<style>
-#app {
-}
-</style>
+<style lang="scss"></style>
